@@ -39,7 +39,7 @@ function App() {
     // fetchData()
   };
 
-  const inputValues = (data) => {
+  const inputValues = (data, i) => {
     // if (!data) return null;
     const fields = [
       {
@@ -105,6 +105,7 @@ function App() {
     return (
       <ul
         className="country mb-2"
+        key={i}
         style={{
           listStyleType: "none",
         }}
@@ -206,7 +207,7 @@ function App() {
                 {apiData.message}
               </p>
             ) : (
-              apiData?.map((data) => inputValues(data))
+              apiData?.map((data, i) => inputValues(data, i))
             )}
           </>
         </div>
