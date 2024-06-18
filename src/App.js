@@ -17,12 +17,12 @@ function App() {
     // console.log(country)
     if (!country) {
       // Set default country to 'India' if query parameter is not found
-      country = "India";
-      setSearchParams({ country });
+      // country = "India";
+      // setSearchParams({ country });
     }
     setSearchValue(country);
     fetchData(country);
-  }, [setSearchParams]);
+  }, [searchParams]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
