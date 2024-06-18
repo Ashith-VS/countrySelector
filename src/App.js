@@ -4,6 +4,7 @@ function App() {
   const [apiData, setApiData] = useState([]);
   const [searchValue, setSearchValue] = useState("India");
   const [searchParams, setSearchParams] = useSearchParams();
+  let country = searchParams.get("country");
 
   // Get a specific query parameter
   // const myParam = searchParams.get("myParam");
@@ -12,17 +13,30 @@ function App() {
   
 
   
+  // useEffect(() => {
+  //   // console.log(country)
+  //   if (!country) {
+  //     // Set default country to 'India' if query parameter is not found
+  //     country = "India";
+  //     setSearchParams({ country });
+  //   }
+  //   setSearchValue(country);
+  //   fetchData(country);
+  // }, [country]);
+
   useEffect(() => {
-    let country = searchParams.get("country");
-    // console.log(country)
-    if (!country) {
-      // Set default country to 'India' if query parameter is not found
-      // country = "India";
-      // setSearchParams({ country });
-    }
-    setSearchValue(country);
-    fetchData(country);
-  }, [searchParams]);
+    const fetchCountryData = async () => {
+      let country = searchParams.get("country");
+      if (!country) {
+        country = "India";
+        setSearchParams({ country });
+      }
+      setSearchValue(country);
+      await fetchData(country);
+    };
+
+    fetchCountryData();
+  }, [searchParams, setSearchParams]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
