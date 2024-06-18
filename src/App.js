@@ -4,15 +4,12 @@ function App() {
   const [apiData, setApiData] = useState([]);
   const [searchValue, setSearchValue] = useState("India");
   const [searchParams, setSearchParams] = useSearchParams();
-  let country = searchParams.get("country");
+
 
   // Get a specific query parameter
   // const myParam = searchParams.get("myParam");
   // console.log(myParam);
 
-  
-
-  
   // useEffect(() => {
   //   // console.log(country)
   //   if (!country) {
@@ -25,17 +22,13 @@ function App() {
   // }, [country]);
 
   useEffect(() => {
-    const fetchCountryData = async () => {
-      let country = searchParams.get("country");
-      if (!country) {
-        country = "India";
-        setSearchParams({ country });
-      }
-      setSearchValue(country);
-      await fetchData(country);
-    };
-
-    fetchCountryData();
+    let country = searchParams.get("country");
+    if (!country) {
+      country = "India";
+      setSearchParams({ country });
+    }
+    setSearchValue(country);
+    fetchData(country);
   }, [searchParams, setSearchParams]);
 
   const handleSearch = async (e) => {
