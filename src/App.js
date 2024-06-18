@@ -1,13 +1,35 @@
 import { useEffect, useState } from "react";
-
+import { useSearchParams } from "react-router-dom";
 function App() {
   const [apiData, setApiData] = useState([]);
   const [searchValue, setSearchValue] = useState("India");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Get a specific query parameter
+  // const myParam = searchParams.get("myParam");
+  // console.log(myParam);
+
+  
+
+  
+  useEffect(() => {
+    let country = searchParams.get("country");
+    console.log(country)
+    if (!country) {
+      // Set default country to 'India' if query parameter is not found
+      country = "India";
+      setSearchParams({ country });
+    }
+    setSearchValue(country);
+    fetchData(country);
+  }, [searchParams]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchValue.trim() !== "") {
       await fetchData(searchValue);
+      // Set a query parameter
+      setSearchParams({ country: searchValue });
     }
   };
 
@@ -17,16 +39,11 @@ function App() {
         `https://restcountries.com/v3.1/name/${country}?fullText=true`
       );
       const data = await response.json();
-
       setApiData(data);
     } catch (error) {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    fetchData("India");
-  }, []);
 
   const handleInput = (e) => {
     setSearchValue(e.target.value);
