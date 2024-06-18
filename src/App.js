@@ -6,30 +6,32 @@ function App() {
   const [searchParams, setSearchParams] = useSearchParams();
 
 
-  // Get a specific query parameter
-  // const myParam = searchParams.get("myParam");
-  // console.log(myParam);
+  useEffect(() => {
+    const fetchCountryData = async () => {
+      try {
+        let country = searchParams.get("country");
+        if (!country) {
+          country = "India";
+          setSearchParams({ country });
+        }
+        setSearchValue(country);
+        await fetchData(country);
+      } catch (error) {
+        console.error("Error fetching country data:", error);
+      }
+    };
 
+    fetchCountryData();
+  }, [searchParams, setSearchParams]);
   // useEffect(() => {
-  //   // console.log(country)
+  //   let country = searchParams.get("country");
   //   if (!country) {
-  //     // Set default country to 'India' if query parameter is not found
   //     country = "India";
   //     setSearchParams({ country });
   //   }
   //   setSearchValue(country);
   //   fetchData(country);
-  // }, [country]);
-
-  useEffect(() => {
-    let country = searchParams.get("country");
-    if (!country) {
-      country = "India";
-      setSearchParams({ country });
-    }
-    setSearchValue(country);
-    fetchData(country);
-  }, [searchParams, setSearchParams]);
+  // }, [searchParams]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
