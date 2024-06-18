@@ -14,7 +14,7 @@ function App() {
   
   useEffect(() => {
     let country = searchParams.get("country");
-    console.log(country)
+    // console.log(country)
     if (!country) {
       // Set default country to 'India' if query parameter is not found
       country = "India";
@@ -22,7 +22,7 @@ function App() {
     }
     setSearchValue(country);
     fetchData(country);
-  }, [searchParams]);
+  }, [setSearchParams]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
