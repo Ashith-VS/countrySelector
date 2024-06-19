@@ -246,9 +246,12 @@ function App() {
             sx={{ width: "100%" }}
             // onChange={handleInput}
             onChange={(event, newValue) => {
-              handleInput(event, newValue);
-              fetchData(newValue); // Fetch data when an option is selected
-              setAutocompleteOpen(false);
+              if (newValue) {
+                handleInput(event, newValue);
+                setSearchParams({ country: newValue });
+                fetchData(newValue); // Fetch data when an option is selected
+                setAutocompleteOpen(false);
+              }
             }}
             renderInput={(params) => (
               <TextField
