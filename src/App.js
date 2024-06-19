@@ -6,6 +6,7 @@ function App() {
   const [searchValue, setSearchValue] = useState("India");
   const [searchParams, setSearchParams] = useSearchParams();
   const [options, setOptions] = useState([]);
+  const [filteredOptions, setFilteredOptions] = useState([]);
   const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 
   useEffect(() => {
@@ -31,7 +32,10 @@ function App() {
       try {
         const response = await fetch(`https://restcountries.com/v3.1/all`);
         const data = await response.json();
-        setOptions(data.map((country) => country.name.common));
+        // setOptions(data.map((country) => country.name.common));
+        const countryNames = data.map((country) => country.name.common);
+        setOptions(countryNames);
+        setFilteredOptions(countryNames);
         // console.log(options)
       } catch (error) {
         console.error("Error fetching country list:", error);
@@ -68,7 +72,12 @@ function App() {
     if (value === "") {
       handleClear();
     } else {
-      setAutocompleteOpen(true); // Open autocomplete dropdown when typing
+      setAutocompleteOpen(true);
+      setFilteredOptions(
+        options?.filter((option) =>
+          option.toLowerCase().includes(value?.toLowerCase())
+        )
+      ); // Open autocomplete dropdown when typing
     }
   };
   const handleClear = () => {
@@ -232,14 +241,14 @@ function App() {
           <Autocomplete
             freeSolo
             open={autocompleteOpen}
-            options={options}
+            options={filteredOptions}
             value={searchValue}
             sx={{ width: "100%" }}
             // onChange={handleInput}
             onChange={(event, newValue) => {
               handleInput(event, newValue);
               fetchData(newValue); // Fetch data when an option is selected
-              setAutocompleteOpen(false)
+              setAutocompleteOpen(false);
             }}
             renderInput={(params) => (
               <TextField
@@ -250,7 +259,7 @@ function App() {
               />
             )}
           />
-          <button className="btn btn-primary">Search</button>
+          <button className="btn btn-primary ml-2">Search</button>
         </form>
         <div className="result" style={{ maxwidth: "300px" }}>
           <>
