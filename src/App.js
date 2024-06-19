@@ -1,10 +1,11 @@
+import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 function App() {
   const [apiData, setApiData] = useState([]);
   const [searchValue, setSearchValue] = useState("India");
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const [options, setOptions] = useState([]);
 
   useEffect(() => {
     const fetchCountryData = async () => {
@@ -20,18 +21,23 @@ function App() {
         console.error("Error fetching country data:", error);
       }
     };
-
     fetchCountryData();
   }, [searchParams, setSearchParams]);
-  // useEffect(() => {
-  //   let country = searchParams.get("country");
-  //   if (!country) {
-  //     country = "India";
-  //     setSearchParams({ country });
-  //   }
-  //   setSearchValue(country);
-  //   fetchData(country);
-  // }, [searchParams]);
+
+  useEffect(() => {
+    // Fetching options for autocomplete (list of countries)
+    const fetchOptions = async () => {
+      try {
+        const response = await fetch(`https://restcountries.com/v3.1/all`);
+        const data = await response.json();
+        setOptions(data.map((country) => country.name.common));
+        // console.log(options)
+      } catch (error) {
+        console.error("Error fetching country list:", error);
+      }
+    };
+    fetchOptions();
+  }, []);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -54,9 +60,9 @@ function App() {
     }
   };
 
-  const handleInput = (e) => {
-    setSearchValue(e.target.value);
-    if (e.target.value === "") {
+  const handleInput = (e, value) => {
+    setSearchValue(value);
+    if (value === "") {
       handleClear();
     }
   };
@@ -211,12 +217,31 @@ function App() {
           className="m-3 d-flex justify-content-center"
           onSubmit={handleSearch}
         >
-          <input
+          {/* <input
             type="search"
             className="form-control mr-2"
             placeholder="Search"
             value={searchValue}
             onChange={handleInput}
+          /> */}
+          <Autocomplete
+            freeSolo
+            options={options}
+            value={searchValue}
+            sx={{width: '100%'}}
+            // onChange={handleInput}
+            onChange={(event, newValue) => {
+              handleInput(event, newValue);
+              fetchData(newValue); // Fetch data when an option is selected
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Search"
+                variant="outlined"
+                onChange={(e) => handleInput(e, e.target.value)}
+              />
+            )}
           />
           <button className="btn btn-primary">Search</button>
         </form>
