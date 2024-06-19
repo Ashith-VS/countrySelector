@@ -6,6 +6,7 @@ function App() {
   const [searchValue, setSearchValue] = useState("India");
   const [searchParams, setSearchParams] = useSearchParams();
   const [options, setOptions] = useState([]);
+  const [autocompleteOpen, setAutocompleteOpen] = useState(false);
 
   useEffect(() => {
     const fetchCountryData = async () => {
@@ -45,6 +46,8 @@ function App() {
       await fetchData(searchValue);
       // Set a query parameter
       setSearchParams({ country: searchValue });
+      // Close autocomplete dropdown
+      setAutocompleteOpen(false);
     }
   };
 
@@ -64,6 +67,8 @@ function App() {
     setSearchValue(value);
     if (value === "") {
       handleClear();
+    } else {
+      setAutocompleteOpen(true); // Open autocomplete dropdown when typing
     }
   };
   const handleClear = () => {
@@ -226,13 +231,15 @@ function App() {
           /> */}
           <Autocomplete
             freeSolo
+            open={autocompleteOpen}
             options={options}
             value={searchValue}
-            sx={{width: '100%'}}
+            sx={{ width: "100%" }}
             // onChange={handleInput}
             onChange={(event, newValue) => {
               handleInput(event, newValue);
               fetchData(newValue); // Fetch data when an option is selected
+              setAutocompleteOpen(false)
             }}
             renderInput={(params) => (
               <TextField
